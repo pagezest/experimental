@@ -1,0 +1,9 @@
+[package]
+name = "upwork_rust_project"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+eyre = "0.6.12"
+psutil = "5.1.0"
+tinywasm = "0.8.0"
