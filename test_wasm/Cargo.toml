@@ -1,9 +1,10 @@
 [package]
-name = "upwork_rust_project"
+name = "pagezest"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 eyre = "0.6.12"
-psutil = "5.1.0"
+psutil = "3.0.0" # Downgrading due to conflict with wasmi
 tinywasm = "0.8.0"
+wasmi = "0.42.0"

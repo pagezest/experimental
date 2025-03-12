@@ -2,6 +2,7 @@ use eyre::Result;
 use tinywasm::{ Module, Store };
 
 use psutil::process::Process;
+use wasmi::{ Engine, Linker, Module as WasmiModule, Store as WasmiStore };
 
 fn get_process_memory() -> u64 {
     let pid = std::process::id();
@@ -11,10 +12,21 @@ fn get_process_memory() -> u64 {
 
 fn main() -> Result<()> {
     // open the file add.wasm and read it into a Vec<u8>
+    println!("-----TinyWASM-----");
     for _ in 1..10 {
         let mem_before = get_process_memory();
         println!("Memory before Wasm: {} KB", mem_before);
-        call_wasm()?;
+        call_tiny_wasm()?;
+        let mem_after = get_process_memory();
+        println!("Memory after Wasm: {} KB", mem_after);
+        println!("Wasm Overhead: {} KB", mem_after.saturating_sub(mem_before));
+    }
+
+    println!("-----WASMI-----");
+    for _ in 1..10 {
+        let mem_before = get_process_memory();
+        println!("Memory before Wasm: {} KB", mem_before);
+        call_wasmi_wasm()?;
         let mem_after = get_process_memory();
         println!("Memory after Wasm: {} KB", mem_after);
         println!("Wasm Overhead: {} KB", mem_after.saturating_sub(mem_before));
@@ -22,7 +34,7 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn call_wasm() -> Result<()> {
+fn call_tiny_wasm() -> Result<()> {
     let wasm_add = std::fs::read("debug.wasm")?;
 
     let add_module = Module::parse_bytes(&wasm_add)?;
@@ -36,6 +48,24 @@ fn call_wasm() -> Result<()> {
     let main = add_instance.exported_func::<(i32, i32), i32>(&store, "add")?;
     let res = main.call(&mut store, (10, 20))?; // 10 + 20 = 30
     println!("Result: {}", res);
+
+    Ok(())
+}
+
+fn call_wasmi_wasm() -> Result<()> {
+    let wasm_add = std::fs::read("debug.wasm")?;
+
+    let engine = Engine::default();
+    let module = WasmiModule::new(&engine, wasm_add)?;
+
+    let mut store = WasmiStore::new(&engine, ());
+
+    let linker = Linker::new(&engine);
+
+    let add_instance = linker.instantiate(&mut store, &module)?.start(&mut store)?;
+    let add_func = add_instance.get_typed_func::<(i32, i32), i32>(&mut store, "add")?;
+    let res = add_func.call(&mut store, (10, 20))?;
+    println!("Results : {}", res);
 
     Ok(())
 }
