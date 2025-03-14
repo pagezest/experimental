@@ -1,7 +1,7 @@
 To compile the rust source code
 
 ```
-cargo run
+cargo run -- <tinywasm|wasmi>
 ```
 
 For generating the wasm binary from assembly script
@@ -14,3 +14,15 @@ npm run build
 ```
 
 You can find the debug.wasm file generated inside `wasm-generator/build/debug.wasm`.
+
+To run benchmarks on `tinyWASM`
+
+```
+cargo run -- tinywasm
+```
+
+To run benchmarks on `wasmi`
+
+```
+cargo run -- wasmi
+```

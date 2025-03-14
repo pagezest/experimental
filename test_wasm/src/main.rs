@@ -1,3 +1,4 @@
+use std::env;
 use eyre::Result;
 use tinywasm::{ Module, Store };
 
@@ -11,25 +12,39 @@ fn get_process_memory() -> u64 {
 }
 
 fn main() -> Result<()> {
-    // open the file add.wasm and read it into a Vec<u8>
-    println!("-----TinyWASM-----");
-    for _ in 1..10 {
-        let mem_before = get_process_memory();
-        println!("Memory before Wasm: {} KB", mem_before);
-        call_tiny_wasm()?;
-        let mem_after = get_process_memory();
-        println!("Memory after Wasm: {} KB", mem_after);
-        println!("Wasm Overhead: {} KB", mem_after.saturating_sub(mem_before));
+    let args: Vec<String> = env::args().collect();
+    if args.len()<2 {
+        eprintln!("Please add an argument to specify WASM VM.");
+        println!("Try : cargo run -- <tinywasm|wasmi>");
+        return Ok(());
     }
-
-    println!("-----WASMI-----");
-    for _ in 1..10 {
-        let mem_before = get_process_memory();
-        println!("Memory before Wasm: {} KB", mem_before);
-        call_wasmi_wasm()?;
-        let mem_after = get_process_memory();
-        println!("Memory after Wasm: {} KB", mem_after);
-        println!("Wasm Overhead: {} KB", mem_after.saturating_sub(mem_before));
+    let wasm_vm = &args[1];
+    match wasm_vm.as_str() {
+        "tinywasm" => {
+            println!("-----TinyWASM-----");
+            for _ in 1..10 {
+                let mem_before = get_process_memory();
+                println!("Memory before Wasm: {} KB", mem_before);
+                call_tiny_wasm()?;
+                let mem_after = get_process_memory();
+                println!("Memory after Wasm: {} KB", mem_after);
+                println!("Wasm Overhead: {} KB", mem_after.saturating_sub(mem_before));
+            }
+        }
+        "wasmi" => {
+            println!("-----WASMI-----");
+            for _ in 1..10 {
+                let mem_before = get_process_memory();
+                println!("Memory before Wasm: {} KB", mem_before);
+                call_wasmi_wasm()?;
+                let mem_after = get_process_memory();
+                println!("Memory after Wasm: {} KB", mem_after);
+                println!("Wasm Overhead: {} KB", mem_after.saturating_sub(mem_before));
+            }
+        }
+        _ => {
+            eprintln!("Invalid WasmVM. Use \"tinywasm\" or \"wasmi\"");
+        }
     }
     Ok(())
 }
