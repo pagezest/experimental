@@ -1,7 +1,8 @@
 To compile the rust source code
 
 ```
-cargo run -- <tinywasm|wasmi>
+cargo run -- tinywasm
+cargo run -- wasmi
 ```
 
 For generating the wasm binary from assembly script
