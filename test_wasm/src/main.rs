@@ -13,7 +13,7 @@ fn get_process_memory() -> u64 {
 
 fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
-    if args.len()<2 {
+    if args.len() < 2 {
         eprintln!("Please add an argument to specify WASM VM.");
         println!("Try : cargo run -- <tinywasm|wasmi>");
         return Ok(());
@@ -40,6 +40,36 @@ fn main() -> Result<()> {
                 let mem_after = get_process_memory();
                 println!("Memory after Wasm: {} KB", mem_after);
                 println!("Wasm Overhead: {} KB", mem_after.saturating_sub(mem_before));
+            }
+        }
+        "2-tinywasm" => {
+            println!("-----2 Tinywasm VM-----");
+            for _ in 1..10 {
+                let mem_before = get_process_memory();
+                println!("Memory before Wasm: {} KB", mem_before);
+                call_tiny_wasm()?;
+                let mem_after = get_process_memory();
+                println!("Memory after Wasm: {} KB", mem_after);
+                println!("Wasm Overhead: {} KB", mem_after.saturating_sub(mem_before));
+                call_sub_tinywasm()?;
+                let mem_after_sub = get_process_memory();
+                println!("Memory after Wasm-2: {} KB", mem_after_sub);
+                println!("Wasm Overhead-2: {} KB", mem_after_sub.saturating_sub(mem_after));
+            }
+        }
+        "2-wasmi" => {
+            println!("-----2 WASMI VM-----");
+            for _ in 1..10 {
+                let mem_before = get_process_memory();
+                println!("Memory before Wasm: {} KB", mem_before);
+                call_wasmi_wasm()?;
+                let mem_after = get_process_memory();
+                println!("Memory after Wasm: {} KB", mem_after);
+                println!("Wasm Overhead: {} KB", mem_after.saturating_sub(mem_before));
+                call_sub_wasmi()?;
+                let mem_after_sub = get_process_memory();
+                println!("Memory after Wasm-2: {} KB", mem_after_sub);
+                println!("Wasm Overhead-2: {} KB", mem_after_sub.saturating_sub(mem_after));
             }
         }
         _ => {
@@ -82,5 +112,29 @@ fn call_wasmi_wasm() -> Result<()> {
     let res = add_func.call(&mut store, (10, 20))?;
     println!("Results : {}", res);
 
+    Ok(())
+}
+
+fn call_sub_tinywasm() -> Result<()> {
+    let wasm_sub = std::fs::read("sub.wasm")?;
+    let add_module = Module::parse_bytes(&wasm_sub)?;
+    let mut store = Store::default();
+    let add_instance = add_module.instantiate(&mut store, None)?;
+    let main = add_instance.exported_func::<(i32, i32), i32>(&store, "sub")?;
+    let res = main.call(&mut store, (20, 10))?;
+    println!("Result: {}", res);
+    Ok(())
+}
+
+fn call_sub_wasmi() -> Result<()> {
+    let wasm_sub = std::fs::read("sub.wasm")?;
+    let engine = Engine::default();
+    let module = WasmiModule::new(&engine, wasm_sub)?;
+    let mut store = WasmiStore::new(&engine, ());
+    let linker = Linker::new(&engine);
+    let sub_instance = linker.instantiate(&mut store, &module)?.start(&mut store)?;
+    let sub_func = sub_instance.get_typed_func::<(i32, i32), i32>(&mut store, "sub")?;
+    let res = sub_func.call(&mut store, (20, 10))?;
+    println!("Results : {}", res);
     Ok(())
 }
