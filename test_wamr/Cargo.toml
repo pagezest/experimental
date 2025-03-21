@@ -1,8 +1,0 @@
-[package]
-name = "test_wamr"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-wamr-rust-sdk = { git = "https://github.com/bytecodealliance/wamr-rust-sdk", features = ["esp-idf"] }
-psutil = "3.0.0" # Downgrading due to conflict with wasmi

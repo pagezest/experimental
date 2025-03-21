@@ -8,3 +8,4 @@ eyre = "0.6.12"
 psutil = "3.0.0" # Downgrading due to conflict with wasmi
 tinywasm = "0.8.0"
 wasmi = "0.42.0"
+wamr-rust-sdk = { git = "https://github.com/bytecodealliance/wamr-rust-sdk" }
