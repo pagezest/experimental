@@ -1,0 +1,8 @@
+[package]
+name = "web_server_poc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+may_minihttp = "0.1.11"
+psutil = "5.2.0"
