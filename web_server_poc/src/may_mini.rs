@@ -1,14 +1,11 @@
+pub mod memory;
+use memory::get_process_memory;
+
 extern crate may_minihttp;
 
 use std::{ fs, io, thread, time };
 use may_minihttp::{ HttpServer, HttpService, Request, Response };
-use psutil::process::Process;
 
-fn get_process_memory() -> u64 {
-    let pid = std::process::id();
-    let process = Process::new(pid).unwrap();
-    process.memory_info().unwrap().rss() / 1024
-}
 
 #[derive(Clone)]
 struct HelloWorld;
@@ -35,7 +32,7 @@ impl HttpService for HelloWorld {
 }
 
 // Start the server in main.
-fn main() {
+pub fn main() {
     // Memory before starting web-server
     let mem_before = get_process_memory();
     println!("Memory Before starting server {} kB", mem_before);
