@@ -9,10 +9,10 @@ We have benchmark multiple web-servers
 To Start the webserver using the following command
 
 ```
-cargo run --bin actix
-cargo run --bin may_minihttp
-cargo run --bin axum
-cargo run --bin tiny-http
+cargo run --release --bin actix
+cargo run --release --bin may_minihttp
+cargo run --release --bin axum
+cargo run --release --bin tiny-http
 ```
 
 Visit localhost at port 8080 in your browser or make API call.

@@ -50,7 +50,7 @@ export LLVM_DIR=$(brew --prefix llvm)/lib/cmake/llvm
 Linux
 ```shell
 sudo pacman -S llvm
-export LLVM_DIR=/usr/bin/llvm
+export LLVM_LIB_CFG_PATH=/usr/bin/llvm
 ```
 
 Keep your rust version > 1.82
