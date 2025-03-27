@@ -19,9 +19,9 @@ To compile the rust source code and run benchmarks based on
 
 Run any of the following commands.
 ```
-cargo run -- tinywasm 10
-cargo run -- wasmi 10
-cargo run -- wamr 10
+cargo run --release -- tinywasm 10
+cargo run --release -- wasmi 10
+cargo run --release -- wamr 10
 ```
 
 # Wamr Setup
