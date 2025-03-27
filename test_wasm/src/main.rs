@@ -56,6 +56,8 @@ fn main() -> Result<()> {
     let num_instances: usize = args[2].parse().unwrap_or(1);
 
     println!("Running {} Instances of {:?}", num_instances, wasm_vm);
+    let mem_start = get_process_memory();
+    println!("Memory Start {} kB", mem_start);
 
     let handles: Vec<_> = (0..num_instances)
         .map(|_| {
@@ -72,7 +74,7 @@ fn main() -> Result<()> {
                 ).unwrap();
 
                 let mem_after = get_process_memory();
-                //println!("Memory After {} kB", mem_after);
+                println!("Memory After {} kB", mem_after);
                 println!("Wasm Overhead {} kB", mem_after.saturating_sub(mem_before));
             })
         })
