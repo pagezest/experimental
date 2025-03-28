@@ -1,0 +1,12 @@
+[package]
+name = "rusqlite-db"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "rusqlite-db"
+path = "src/main.rs"
+
+[dependencies]
+rusqlite = "0.34.0"
+psutil = "5.2.0"

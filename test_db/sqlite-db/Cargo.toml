@@ -1,0 +1,12 @@
+[package]
+name = "sqlite-db"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "sqlite-db"
+path = "src/main.rs"
+
+[dependencies]
+sqlite = "0.37.0"
+psutil = "5.2.0"
