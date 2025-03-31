@@ -1,0 +1,11 @@
+[package]
+name = "overall_poc"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+eyre = "0.6.12"
+psutil = "5.2.0"
+rusqlite = "0.34.0"
+tiny_http = "0.12.0"
+wamr-rust-sdk = { git = "https://github.com/bytecodealliance/wamr-rust-sdk" }
