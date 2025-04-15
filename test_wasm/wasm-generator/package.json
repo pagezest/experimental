@@ -23,5 +23,8 @@
       "import": "./build/release.js",
       "types": "./build/release.d.ts"
     }
+  },
+  "dependencies": {
+    "assemblyscript-json": "^1.1.0"
   }
 }
